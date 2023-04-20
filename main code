@@ -1,0 +1,299 @@
+import os
+import pajak
+import the_sum_txt_makers
+
+
+# Fungsi sumarry
+def summary(harga_makanan):
+    total_harga = sum(harga_makanan)
+
+    return {
+        "total_harga": total_harga,
+    }
+
+# Fungsi diskon sesuai tanggal
+def diskon_pertengahan(total1):
+    total_diskon_tanggal = total1-(total1*0.05) # Diskon 5%
+    return{
+        "total_diskon_tanggal":total_diskon_tanggal
+    }
+
+def diskon_akhir_bulan(total1):
+    total_diskon_tanggal = total1-(total1*0.1) # Diskon 10%
+    return{
+        "total_diskon_tanggal":total_diskon_tanggal
+    }
+
+# Diskon member
+def diskon_member(total_new):
+    total_diskon_member = total_new-(total_new*0.05) # Diskon 5%
+    return{
+        "total_diskon_member":total_diskon_member
+    }
+
+# Pajak transaksi
+def pajak_transaksi_pribadi(total_transaksi):
+    total_transaksi_pribadi = total_transaksi+(total_transaksi*0.02) # Pajak 2%
+    return{
+        "total_transaksi_pribadi":total_transaksi_pribadi
+    }
+def pajak_transaksi_perusahaan(total_transaksi):
+    total_transaksi_perusahaan = total_transaksi+(total_transaksi*0.06) # Pajak 6%
+    return{
+        "total_transaksi_perusahaan":total_transaksi_perusahaan
+    }
+
+ 
+
+
+# List penyimpan harga makanan
+harga_makanan = []
+
+# Membaca isi file user.txt
+with open("user.txt", "r") as file:
+    user = file.readline().strip() # mengambil username pada baris pertama
+    password = file.readline().strip() # mengambil password pada baris kedua
+
+# Header
+looping_C = "Y"
+looping_A = "Y"
+while looping_A == "N" or looping_A == "Y": 
+    print("\n|==>------------------------------------------ KASIR ------------------------------------------<==|")
+    print("|====================================| RESTORAN MURAH LANCAR |====================================|")
+    print("|==>-------------------------------------------------------------------------------------------<==|\n")
+    input_username = input("|==> Masukkan Username  : ")
+    input_password = input("|==> Masukkan Password  : ")
+    print("|==>-------------------------------------------------------------------------------------------<==|")
+
+    looping_C = "Y"
+
+    # memeriksa apakah username dan password sesuai
+    if input_username == user and input_password == password:
+        # meminta input harga makanan
+        while True:
+            while looping_C == "Y":
+                harga = input("|==> Masukkan harga makanan (masukkan 0 untuk selesai  : ")
+                if harga == '0':
+                    break
+                harga_makanan.append(int(harga))
+            print("|==>-------------------------------------------------------------------------------------------<==|")
+            hasil_summary = summary(harga_makanan)
+            total1 = hasil_summary["total_harga"]
+
+            # Input tanggal transaksi
+            tanggal_transaksi = int(input("|==> Masukkan tanggal transaksi   : "))
+            if tanggal_transaksi == 15 or tanggal_transaksi <= 20:
+                total_diskon_tanggal = diskon_pertengahan(total1)
+                total_new = total_diskon_tanggal["total_diskon_tanggal"]
+                
+                # Input apakah member atau bukan
+                member = input("|==> Member (Y/N)?   : ")
+                if member == "Y":
+                    total_diskon_member = diskon_member(total_new)
+                    transaksi = input("|==> Transaksi pribadi / perusahaan (P/U)? : ")
+                    total_transaksi = total_diskon_member["total_diskon_member"]
+
+                    # Transaksi perusahaan / pribadi
+                    if transaksi == "P":
+                        total_transaksi_pribadi = pajak_transaksi_pribadi(total_transaksi)
+                        total_tpribadi = total_transaksi_pribadi["total_transaksi_pribadi"]
+                        total_fiks = total_tpribadi
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tpribadi >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tpribadi)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                    elif transaksi == "U":
+                        total_transaksi_perusahaan = pajak_transaksi_perusahaan(total_transaksi)
+                        total_tp = total_transaksi_perusahaan["total_transaksi_perusahaan"]
+                        total_fiks = total_tp
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tp >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tp)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                elif member == "N":
+                    transaksi = input("|==> Transaksi pribadi / perusahaan (P/U)? : ")
+                    total_transaksi = total_new
+
+                    # Transaksi perusahaan / pribadi
+                    if transaksi == "P":
+                        total_transaksi_pribadi = pajak_transaksi_pribadi(total_transaksi)
+                        total_tpribadi = total_transaksi_pribadi["total_transaksi_pribadi"]
+                        total_fiks = total_tpribadi
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tpribadi >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tpribadi)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                    elif transaksi == "U":
+                        total_transaksi_perusahaan = pajak_transaksi_perusahaan(total_transaksi)
+                        total_tp = total_transaksi_perusahaan["total_transaksi_perusahaan"]
+                        total_fiks = total_tp
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tp >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tp)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+
+                    
+
+            elif tanggal_transaksi == 25 or tanggal_transaksi <= 31:
+                total_diskon_tanggal = diskon_akhir_bulan(total1)
+                total_new = total_diskon_tanggal["total_diskon_tanggal"]
+                # Input apakah member atau bukan
+                member = input("|==> Member (Y/N)?   : ")
+                if member == "Y":
+                    total_diskon_member = diskon_member(total_new)
+                    transaksi = input("|==> Transaksi pribadi / perusahaan (P/U)? : ")
+                    total_transaksi = total_diskon_member["total_diskon_member"]
+
+                    # Transaksi perusahaan / pribadi
+                    if transaksi == "P":
+                        total_transaksi_pribadi = pajak_transaksi_pribadi(total_transaksi)
+                        total_tpribadi = total_transaksi_pribadi["total_transaksi_pribadi"]
+                        total_fiks = total_tpribadi
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tpribadi >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tpribadi)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                    elif transaksi == "U":
+                        total_transaksi_perusahaan = pajak_transaksi_perusahaan(total_transaksi)
+                        total_tp = total_transaksi_perusahaan["total_transaksi_perusahaan"]
+                        total_fiks = total_tp
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tp >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tp)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                elif member == "N":
+                    transaksi = input("|==> Transaksi pribadi / perusahaan (P/U)? : ")
+                    total_transaksi = total_new
+
+                    # Transaksi perusahaan / pribadi
+                    if transaksi == "P":
+                        total_transaksi_pribadi = pajak_transaksi_pribadi(total_transaksi)
+                        total_tpribadi = total_transaksi_pribadi["total_transaksi_pribadi"]
+                        total_fiks = total_tpribadi
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tpribadi >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tpribadi)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                    elif transaksi == "U":
+                        total_transaksi_perusahaan = pajak_transaksi_perusahaan(total_transaksi)
+                        total_tp = total_transaksi_perusahaan["total_transaksi_perusahaan"]
+                        total_fiks = total_tp
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tp >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tp)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+            else:
+                total_new = total1
+                # Input apakah member atau bukan
+                member = input("|==> Member (Y/N)?   : ")
+                if member == "Y":
+                    total_diskon_member = diskon_member(total_new)
+                    transaksi = input("|==> Transaksi pribadi / perusahaan (P/U)? : ")
+                    total_transaksi = total_diskon_member["total_diskon_member"]
+
+                    # Transaksi perusahaan / pribadi
+                    if transaksi == "P":
+                        total_transaksi_pribadi = pajak_transaksi_pribadi(total_transaksi)
+                        total_tpribadi = total_transaksi_pribadi["total_transaksi_pribadi"]
+                        total_fiks = total_tpribadi
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tpribadi >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tpribadi)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                    elif transaksi == "U":
+                        total_transaksi_perusahaan = pajak_transaksi_perusahaan(total_transaksi)
+                        total_tp = total_transaksi_perusahaan["total_transaksi_perusahaan"]
+                        total_fiks = total_tp
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tp >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tp)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                elif member == "N":
+                    transaksi = input("|==> Transaksi pribadi / perusahaan (P/U)? : ")
+                    total_transaksi = total_new
+
+                    # Transaksi perusahaan / pribadi
+                    if transaksi == "P":
+                        total_transaksi_pribadi = pajak_transaksi_pribadi(total_transaksi)
+                        total_tpribadi = total_transaksi_pribadi["total_transaksi_pribadi"]
+                        total_fiks = total_tpribadi
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tpribadi >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tpribadi)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                    elif transaksi == "U":
+                        total_transaksi_perusahaan = pajak_transaksi_perusahaan(total_transaksi)
+                        total_tp = total_transaksi_perusahaan["total_transaksi_perusahaan"]
+                        total_fiks = total_tp
+                        # Menulis total ke file transaksi.txt
+                        a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                        if total_tp >= 500000:
+                            total_fiks = pajak.pajak_resto(total_tp)
+                            # Menulis total ke file transaksi.txt
+                            a = the_sum_txt_makers.txt_makers(total_fiks)
+
+                    
+            print("|==>-------------------------------------------------------------------------------------------<==|")
+            print("|==> File Transaksi.txt telah dibuat :)")
+            print("|==>-------------------------------------------------------------------------------------------<==|")
+
+            looping_C = input("|==> Apakah akan memasukkan transaksi berikutnya (Y/N) ? : ")
+            if looping_C == "N":
+                looping_A == "Y"
+                os.system("clear")
+                break
+            print("|==>-------------------------------------------------------------------------------------------<==|")
+            
+
+            
+
+        
+                
+
+    else:
+        os.system("clear")
+        print("\n|---------| Username atau password salah! |---------|\n")
